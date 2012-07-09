@@ -28,5 +28,5 @@ foreach ( $db->{'daily_' . $faction}->find( $filter )->skip( $start )->limit( 1 
 	$data['vals'] = array( $prev['value']['average'], $daily['value']['average'] );
 	$data['name'] = $item['name'];
 
-	echo 'tickerCB(', json_encode( $data ), ')';
+	echo 'tickerCB(', json_encode( $data ), ');';
 }

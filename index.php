@@ -7,12 +7,7 @@
 
 <!-- Le styles -->
 <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-<style>
-body {
-	padding-top: 60px;
-	padding-bottom: 20px;
-}
-</style>
+<link href="style.min.css" rel="stylesheet">
 <link href="/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
 
 <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
@@ -22,8 +17,6 @@ body {
 <![endif]-->
 </head>
 <body>
-
-<!-- Yes, this is the page I sent to Blizzard. -->
 <div class="container-fluid">
 <?php
 
@@ -31,7 +24,7 @@ require_once 'init.php';
 
 ?>
 <div class="hero-unit">
-<div class="row-fluid" style="text-align: center;">
+<div class="row-fluid center">
 <?php foreach ( array( 'alliance', 'neutral', 'horde' ) as $faction ) { ?>
 
 <div class="span4">
@@ -42,12 +35,14 @@ require_once 'init.php';
 <?php } ?>
 </div>
 <br>
-<h1 style="text-align: center;"><?php echo time() % 86400 < 7200 ? 'Yesterday' : 'Today'; ?>&rsquo;s most listed items</h1>
+<pre id="ticker"></pre>
+<br>
+<h1 class="center"><?php echo time() % 86400 < 7200 ? 'Yesterday' : 'Today'; ?>&rsquo;s most listed items</h1>
 <div class="row-fluid">
 <?php foreach ( array( 'alliance', 'neutral', 'horde' ) as $faction ) { ?>
 
 <div class="span4">
-<ul style="list-style: none;">
+<ul class="top-auctions">
 <?php
 
 $faction_to_badge = array(
@@ -64,24 +59,21 @@ foreach ( $db->{'daily_' . $faction}->find( array( 'value.date' => new MongoDate
 	$count = $most_listed['value']['count'];
 	switch ( $i++ ) {
 		case 0:
-			$font_size = 2;
+			$class = ' class="first"';
 			$image_size = 56;
-			$line_height = 32;
 			break;
 		case 1:
-			$font_size = 1.25;
+			$class = ' class="second"';
 			$image_size = 36;
-			$line_height = 40;
 			break;
 		default:
-			$font_size = 1;
+			$class = '';
 			$image_size = 18;
-			$line_height = 29;
 	}
-	echo '<li style="font-size: ', $font_size, 'em; line-height: ', $line_height, 'px; clear: left; position: relative;">', PHP_EOL,
+	echo '<li', $class, '>', PHP_EOL,
 		'<a href="http://eu.battle.net/wow/en/item/', $item['id'], '">',
-		'<span class="badge badge-', $faction_to_badge[$faction], '" style="display: block; position: absolute; right: 105%; top: ', $image_size / 2 - 5, 'px;">', number_format( $count ), '</span>', PHP_EOL,
-		'<img class="thumbnail pull-left" width="', $image_size, '" height="', $image_size, '" src="/wow/icons/', $image_size, '/', $item['icon'], '.jpg">', PHP_EOL,
+		'<span class="badge badge-', $faction_to_badge[$faction], '">', number_format( $count ), '</span>', PHP_EOL,
+		'<img class="thumbnail" width="', $image_size, '" height="', $image_size, '" src="/wow/icons/', $image_size, '/', $item['icon'], '.jpg">', PHP_EOL,
 		$item['name'], '</a>', PHP_EOL,
 	     '</li>', PHP_EOL;
 }
@@ -101,6 +93,7 @@ foreach ( $db->{'daily_' . $faction}->find( array( 'value.date' => new MongoDate
 <!-- Placed at the end of the document so the pages load faster -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 <script async src="/bootstrap/js/bootstrap.min.js"></script>
+<script async src="ticker.min.js"></script>
 
 <script async>
 var _gaq = _gaq || [];

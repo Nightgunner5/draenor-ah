@@ -12,6 +12,17 @@ function formatTickerMoney(amt) {
 	return f( amt / 1000 ) + 'K';
 }
 
+function tickerTick(vars) {
+	if ( vars.ticker.text().length < vars.ticker.width() * 0.15 && !vars.currentlyRequesting ) {
+		vars.currentlyRequesting = true;
+		$.getScript('ticker.php', function() {
+			vars.currentlyRequesting = false;
+		} );
+	}
+	vars.ticker.text(vars.ticker.text().substr(1));
+}
+setInterval( tickerTick, 750, {ticker: $('#ticker')} );
+
 function tickerCB( data ) {
 	var message = data.name;
 	var diff = Math.round( data.vals[1] - data.vals[0] );
@@ -22,8 +33,8 @@ function tickerCB( data ) {
 		diff = -diff;
 	}
 	message += formatTickerMoney( diff );
-	message += ' (' + formatTickerMoney( data.vals[1] ) + ')';
-	console.log( message );
+	message += ' (' + formatTickerMoney( data.vals[1] ) + ')    ';
+	$('#ticker').append( message );
 }
 window['tickerCB'] = tickerCB;
 
